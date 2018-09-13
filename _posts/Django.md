@@ -1,0 +1,89 @@
+## Django 教程
+
+ :smirk: :thumbsup: 
+
+#### 安装：
+
+```
+$ pip install django            //可加上版本号，==1.10.2
+$ python -m django --version    //查看 Django 版本
+```
+
+#### 创建项目
+
+```
+$ django-admin startproject mysite
+启动服务器
+$ python manage.py runserver 0:8000    //修改settings 文件 使得外网可以访问
+$ python manage.py            //可以查看可用命令
+```
+
+##### 项目结构：
+
+```
+├── manage.py       #管理程序的文件、启动和结束等
+└── my_site
+    ├── __init__.py     #python中声明一个模块，内容默认为空
+    ├── settings.py     #程序的配置文件
+    ├── urls.py		    #程序的路由系统，每个页面都要配置
+    └── wsgi.py          #指定框架的wsgi
+```
+
+##### wsgi.py
+
+​	WSGI ( Python Web Server Gateway)
+
+​	中文名：Pyhon 服务器网关接口
+
+​	Python 应用与 Web 服务器之间的接口
+
+#### 创建应用（容器）
+
+```
+$ cd hello_django/
+$ django-admin startapp app01  / python manage.py startapp deploy
+$ vim settings.py
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'app01'
+项目结构    
+app01/
+├── admin.py		# 该应用的后台管理系统
+├── apps.py			# django 把 项目和 app 关联起来的一个文件
+├── __init__.py
+├── migrations       # 数据移植
+│   └── __init__.py
+├── models.py	    # 数据库操作地方，使用 ORM 框架
+├── tests.py		# 自动化测试
+└── views.py	     # 业务逻辑代码
+```
+
+#### 第一次 django 请求
+
+- 匹配路由，路由分发器查找用户请求的 url 对应的关系 url.py 编写路由
+  - 找到业务函数，调用
+  - 找不到，404
+- 业务函数，执行业务逻辑
+  - view.py 写一个业务函数
+  - HttpResponse 方法返回数据给前端
+- 返回数据给浏览器
+
+####  模板初探
+
+- 配置 settyings.py
+- views.py render方法
+
+#### 路由
+
+#### 超链接
+
+template 用 "{%url 'app_name:url_name' param%}"
+
+参考
+
+https://www.cnblogs.com/feixuelove1009/p/5823135.html

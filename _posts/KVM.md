@@ -1,0 +1,112 @@
+# KVM安装
+
+[TOC]
+
+
+
+###实验环境：
+
+- 物理机:Lenovo ThinkpadE470
+- 虚拟机:VMware
+- 操作系统:CentOS7.4
+
+kvm 是Kernel-based Virtual Machine 的缩写
+
+___
+
+
+
+### 检测是否支持KVM
+
+KVM是基于x86虚拟化扩展技术的的虚拟机软件，判断是否支持VT技术，就可以判断是否支持KVM。有返回结果，就说明CPU支持。
+
+```
+$ cat /proc/cpuinfo | egrep 'vmx|svm'
+
+flags   : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf eagerfpu pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm arat epb pln pts dtherm tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc
+```
+
+一个KVM虚拟机在宿主机中其实是一个qemu-kvm进程，与其他Linux进程一样被调度。
+
+虚拟机中的每一个 vCpu 对应 qemu-kvm 进程中的一个线程。
+
+虚拟机的 vCpu 总数可以超过物理 CPU 的数量，这个叫做 CPU overcommit (超配)
+
+KVM 允许 overcommit ，这个特性使得虚拟机能够充分地利用宿主机的 CPU资源 ，但是前提是同一时刻，不是所有虚拟机满负荷运行。当然，如果每个虚拟机都很忙，反而会影响整体性能。所有在使用 overcommit的时候，要对虚拟机的情况有所了解，需要测试。
+
+#### 笔记本虚拟化开启
+
+> Thinkpad 需要在 BIOS 中设置 CPU 虚拟化开启。首先找到 CPU features，然后找到Virtualization Technology(VT)，将值设为 Enabled。
+>
+> VT-d Tech 选项也应该将此项开启。
+
+#### 虚拟机虚拟化开启
+
+![](E:\文档\KVM\虚拟机设置.png)
+
+#### 增加桥接网卡
+
+备份一下网卡配置文件，新增并修改br0网卡，然后重启网络服务。
+
+![vimdiff](E:\文档\KVM\vimdiff.png)
+
+#### 安装KVM环境
+
+通过yum安装kvm基础包和管理工具
+
+kvm相关安装包及其作用
+
+- `qemu-kvm` 主要的KVM程序包
+- `python-virtinst` 创建虚拟机所需要的命令行工具和程序库
+- `virt-manager` GUI虚拟机管理工具
+- `virt-top` 虚拟机统计命令
+- `virt-viewer` GUI连接程序，连接到已配置好的虚拟机
+- `libvirt` C语言工具包，提供libvirt服务
+- `libvirt-client` 为虚拟客户机提供的C语言工具包
+- `virt-install` 基于libvirt服务的虚拟机创建命令
+- `bridge-utils` 创建和管理桥接设备的工具
+
+- virt-manager 安装虚拟机
+
+
+```
+# 安装 kvm 
+# ------------------------
+# yum -y install qemu-kvm python-virtinst libvirt libvirt-python virt-manager libguestfs-tools bridge-utils virt-install
+
+yum -y install qemu-kvm libvirt virt-install bridge-utils 
+
+# 重启宿主机，以便加载 kvm 模块
+# ------------------------
+reboot
+
+# 查看KVM模块是否被正确加载
+# ------------------------
+lsmod | grep kvm
+
+kvm_intel             162153  0
+kvm                   525259  1 kvm_intel
+```
+
+开启kvm服务，并且设置其开机自动启动
+
+```
+systemctl start libvirtd
+systemctl enable libvirtd
+```
+
+查看状态操作结果，如`Active: active (running)`，说明运行情况良好
+
+```
+systemctl status libvirtd
+systemctl is-enabled libvirtd
+
+● libvirtd.service - Virtualization daemon
+   Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
+   Active: active (running) since 二 2001-01-02 11:29:53 CST; 1h 41min ago
+     Docs: man:libvirtd(8)
+           http://libvirt.orgps -ef | grep images 可以看到虚拟机就是运行在物理机上的线程
+```
+
+
+
