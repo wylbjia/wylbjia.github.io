@@ -4,7 +4,7 @@ title:     Sweetalert 弹窗插件
 subtitle:   优化你的弹窗
 date:       2018-9-13
 author:     wylb
-header-img: img/sweetalert.jpg
+header-img: img/post-bg-map.jpg
 catalog: 	 true
 tags:
     - js
