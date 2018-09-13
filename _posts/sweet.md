@@ -1,3 +1,15 @@
+---
+layout:     post
+title:     Sweetalert 弹窗插件
+subtitle:   优化你的弹窗
+date:       2018-9-13
+author:     wylb
+header-img: img/sweetalert.jpg
+catalog: 	 true
+tags:
+    - js
+    - 弹窗
+---
 # Sweet alert 使用教程
 
 ####  优化单调的 alert 页面展示
