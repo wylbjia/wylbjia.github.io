@@ -1,3 +1,16 @@
+---
+layout:     post
+title:      Uwsgi
+subtitle:   Uwsgi 转发 Nginx
+date:       2018-9-14
+author:     Wylb
+header-img: img/post-bg-desk.jpg
+catalog: 	 true
+tags:
+    - Uwsgi
+    - Django
+    - Nginx
+---
 #### Uwsgi
 
 ​	首先弄清下面几个概念：
